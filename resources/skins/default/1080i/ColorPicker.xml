@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1119">
+	<defaultcontrol always="true">3110</defaultcontrol>
+	<backgroundcolor>0</backgroundcolor>
+	<controls>
+		<include>GlobalBackground</include>
+		<include>Furniture_Header</include>
+		<include>Furniture_NowPlaying</include>
+		<include>Furniture_Clock</include>
+		<!--Header -->
+		<control type="label">
+			<include>animation_fade_visible_hidden</include>
+			<posx>770</posx>
+			<posy>94</posy>
+			<width>auto</width>
+			<font>Large</font>
+			<label>Selected Colour</label>
+			<align>left</align>
+			<textcolor>$INFO[Control.GetLabel(3110)]</textcolor>
+		</control>
+		<control type="panel" id="3110">
+			<viewtype label="31438">icons</viewtype>
+			<posx>60</posx>
+			<posy>175</posy>
+			<width>1836</width>
+			<height>600</height>
+			<orientation>vertical</orientation>
+			<onleft>3110</onleft>
+			<onright>60</onright>
+			<onup>3110</onup>
+			<ondown>3010</ondown>
+			<preloaditems>4</preloaditems>
+			<pagecontrol>60</pagecontrol>
+			<itemlayout height="100" width="100">
+				<control type="image">
+					<width>92%</width>
+					<height>92%</height>
+					<texture border="5">$INFO[ListItem.Icon]</texture>
+				</control>
+			</itemlayout>
+			<focusedlayout height="150" width="150">
+				<control type="image">
+					<width>95%</width>
+					<height>95%</height>
+					<texture border="5">$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="textbox">
+					<font>Small</font>
+					<left>10</left>
+					<top>10</top>
+					<right>10</right>
+					<width>90%</width>
+					<height>90%</height>
+					<align>left</align>
+					<info>ListItem.Label</info>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</focusedlayout>
+		</control>
+		<!-- edit label -->
+		<control type="edit" id="3010">
+			<left>60</left>
+			<top>800</top>
+			<width>800</width>
+			<height>60</height>
+			<font>SmallMedium</font>
+			<onup>3110</onup>
+			<ondown>SetFocus(3110,1)</ondown>
+			<onright>3011</onright>
+			<label>Manual ARGB color value:</label>
+			<textcolor>white</textcolor>
+			<focusedcolor>black</focusedcolor>
+			<disabledcolor>lightgrey</disabledcolor>
+			<pulseonselect>false</pulseonselect>
+			<texturefocus colordiffuse="$VAR[ColourHighlight]" border="5">common/box.png</texturefocus>
+			<texturenofocus colordiffuse="White70" border="5">common/box.png</texturenofocus>
+		</control>
+		
+		<!--vertical Scollbar -->
+		<control type="scrollbar" id="60">
+			<right>15</right>
+			<posy>175</posy>
+			<height>700</height>
+			<onup>60</onup>
+			<ondown>60</ondown>
+			<onleft>3110</onleft>
+			<animation effect="fade" start="0" end="100" time="400" condition="Control.HasFocus(60) | Skin.HasSetting(EnableTouchSupport) | Container.Scrolling | Skin.HasSetting(alwaysShowScrollbars)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="400" condition="![Control.HasFocus(60) | Skin.HasSetting(EnableTouchSupport) | Container.Scrolling | Skin.HasSetting(alwaysShowScrollbars)]">Conditional</animation>
+		</control>
+	</controls>
+</window>
