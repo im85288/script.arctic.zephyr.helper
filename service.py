@@ -14,6 +14,7 @@ sys.path.append(BASE_RESOURCE_PATH)
 
 from LibraryMonitor import LibraryMonitor
 from LibraryMonitor import Kodi_Monitor
+from BackgroundsUpdater import BackgroundsUpdater
 
 class Main:
     
@@ -24,6 +25,9 @@ class Main:
         #start the extra threads
         libraryMonitor = LibraryMonitor()
         libraryMonitor.start()
+        
+        backgroundsUpdater = BackgroundsUpdater()
+        backgroundsUpdater.start()
         
         while not self.KodiMonitor.abortRequested():
                      

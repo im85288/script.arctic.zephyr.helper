@@ -6,7 +6,7 @@ __settings__ = xbmcaddon.Addon(id='script.arctic.zephyr.helper')
 __cwd__ = __settings__.getAddonInfo('path')
 BASE_RESOURCE_PATH = xbmc.translatePath( os.path.join( __cwd__, 'resources', 'lib' ) )
 sys.path.append(BASE_RESOURCE_PATH)
-
+import MainModule
 #script init
 action = ""
 argument1 = ""
@@ -40,6 +40,8 @@ if action == "COLORPICKER":
     colorPicker.skinString = argument1
     colorPicker.doModal()
     del colorPicker
+elif action == "SETVIEW":
+    MainModule.setView()
 
 
     
