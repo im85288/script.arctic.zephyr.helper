@@ -149,7 +149,7 @@ def selectView(contenttype="other", currentView=None, displayNone=False):
                 listitem.setProperty("icon",image)
                 allViews.append(listitem)
                 itemcount +=1
-    w = dialogs.DialogSelectBig( "DialogSelect.xml", __cwd__, listing=allViews, windowtitle="Select View",multiselect=False )
+    w = dialogs.DialogSelectBig( "BigDialogSelect.xml", __cwd__, listing=allViews, windowtitle="Select View",multiselect=False )
     w.autoFocusId = currentViewSelectId
     w.doModal()
     selectedItem = w.result
