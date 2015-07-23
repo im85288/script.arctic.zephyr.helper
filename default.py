@@ -42,6 +42,8 @@ if action == "COLORPICKER":
     del colorPicker
 elif action == "SETVIEW":
     MainModule.setView()
+elif action == "ENABLEVIEWS":
+    MainModule.enableViews()
 
 
     

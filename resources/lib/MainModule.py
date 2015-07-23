@@ -41,24 +41,29 @@ def enableViews():
             type = view.attributes[ 'type' ].nodeValue
             listitem = xbmcgui.ListItem(label=label)
             listitem.setProperty("id",id)
-            if not xbmc.getCondVisibility("Skin.HasSetting(View.Disabled.%s)" %id):
+            if not xbmc.getCondVisibility("Skin.HasSetting(ArcticView.Disabled.%s)" %id):
+                xbmc.log("view is enabled:%s" %id)
                 listitem.select(selected=True)
             allViews.append(listitem)
     
-    w = dialogs.DialogSelectSmall( "DialogSelect.xml", __cwd__, listing=allViews, windowtitle=xbmc.getLocalizedString(31487),multiselect=True )
+    w = dialogs.DialogSelectSmall( "DialogSelect.xml", __cwd__, listing=allViews, windowtitle=xbmc.getLocalizedString(31769),multiselect=True )
     w.doModal()
-    
+    xbmc.log("enable window closed")
     selectedItems = w.result
+    xbmc.log("selected items:" + str(selectedItems))
     if selectedItems != -1:
+        xbmc.log("selected items greater than 1")
         itemcount = len(allViews) -1
         while (itemcount != -1):
             viewid = allViews[itemcount].getProperty("id")
             if itemcount in selectedItems:
                 #view is enabled
-                xbmc.executebuiltin("Skin.Reset(View.Disabled.%s)" %viewid)
+                xbmc.log("resetting view:%s" %viewid)
+                xbmc.executebuiltin("Skin.Reset(ArcticView.Disabled.%s)" %viewid)
             else:
                 #view is disabled
-                xbmc.executebuiltin("Skin.SetBool(View.Disabled.%s)" %viewid)
+                xbmc.log("disabling view:%s" %viewid)
+                xbmc.executebuiltin("Skin.SetBool(ArcticView.Disabled.%s)" %viewid)
             itemcount -= 1    
     del w        
 

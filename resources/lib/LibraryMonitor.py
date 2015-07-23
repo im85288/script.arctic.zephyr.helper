@@ -27,6 +27,12 @@ class LibraryMonitor(threading.Thread):
     delayedTaskInterval = 1800
     moviesetCache = {}
     extraFanartcache = {}
+    allStudioLogos = list()
+    allColourStudioLogos = list()
+    studioLogosPath = None
+    studioColourLogosPath = None
+    LastStudioImagesPath = None
+    LastColourStudioImagesPath = None
     
     win = None
     addon = None
@@ -51,7 +57,14 @@ class LibraryMonitor(threading.Thread):
 
         lastListItemLabel = None
 
-        while (xbmc.abortRequested == False and self.exit != True):                 
+        while (xbmc.abortRequested == False and self.exit != True):
+
+            #do some background stuff every 30 minutes
+            if (xbmc.getCondVisibility("!Window.IsActive(videolibrary) + !Window.IsActive(fullscreenvideo)")):
+                if (self.delayedTaskInterval >= 1800):
+                     self.getStudioLogos()
+                     self.getColourStudioLogos()
+                     self.delayedTaskInterval = 0
             
             # monitor listitem props when videolibrary is active
             if (xbmc.getCondVisibility("[Window.IsActive(videolibrary) | Window.IsActive(movieinformation)] + !Window.IsActive(fullscreenvideo)")):
@@ -66,15 +79,116 @@ class LibraryMonitor(threading.Thread):
                     # update the listitem stuff
                     try:
                         self.checkExtraFanArt()
+                        self.setStudioLogo()
                     except Exception as e:
                         utils.logMsg("Error", "ERROR in LibraryMonitor ! --> " + str(e), 0)
   
                 else:
                     xbmc.sleep(50)
-
             else:
                 xbmc.sleep(1000)
                 self.delayedTaskInterval += 1
+
+    def setStudioLogo(self):
+            studio = xbmc.getInfoLabel('ListItem.Studio')
+            studiologo = None
+
+            #find logo if multiple found
+            if "/" in studio:
+                studios = studio.split(" / ")
+                count = 0
+                for item in studios:
+                    if item in self.allStudioLogos:
+                        studiologo = self.studioLogosPath + studios[count]
+                        break
+                    count += 1
+
+            #find logo normal
+            if studio in self.allStudioLogos:
+                studiologo = self.studioLogosPath + studio
+            else:
+                #find logo by substituting characters
+                studio = studio.replace(" (US)","")
+                studio = studio.replace(" (UK)","")
+                studio = studio.replace(" (CA)","")
+                for logo in self.allStudioLogos:
+                    if logo.lower() == studio.lower():
+                        studiologo = self.studioLogosPath + logo
+
+            if studiologo:
+                self.win.setProperty("ListItemStudioLogo", studiologo + ".png")
+            else:
+                self.win.clearProperty("ListItemStudioLogo")
+
+            studio = xbmc.getInfoLabel('ListItem.Studio')
+            studiologo = None
+
+            #find logo if multiple found
+            if "/" in studio:
+                studios = studio.split(" / ")
+                count = 0
+                for item in studios:
+                    if item in self.allColourStudioLogos:
+                         studiologo = self.studioColourLogosPath + studios[count]
+                         break
+                    count += 1
+
+            #find logo normal
+            if studio in self.allColourStudioLogos:
+                studiologo = self.studioColourLogosPath + studio
+            else:
+                #find logo by substituting characters
+                studio = studio.replace(" (US)","")
+                studio = studio.replace(" (UK)","")
+                studio = studio.replace(" (CA)","")
+                for logo in self.allColourStudioLogos:
+                     if logo.lower() == studio.lower():
+                         studiologo = self.studioColourLogosPath + logo
+
+                     if studiologo:
+                         self.win.setProperty("ListItemColourStudioLogo", studiologo + ".png")
+                     else:
+                         self.win.clearProperty("ListItemColourStudioLogo")
+
+    def getStudioLogos(self):
+            #fill list with all studio logos
+            StudioImagesCustompath = xbmc.getInfoLabel("Skin.String(StudioImagesCustompath)")
+            if StudioImagesCustompath:
+                path = StudioImagesCustompath
+                if not (path.endswith("/") or path.endswith("\\")):
+                    path = path + os.sep()
+            else:
+                if xbmc.getCondVisibility("Skin.HasSetting(furniture.flags.colour)"):
+                    path = "special://skin/extras/flags/colour/studios/"
+                else:
+                    path = "special://skin/extras/flags/studios/"
+
+            if path != self.LastStudioImagesPath:
+                self.LastStudioImagesPath = path
+                allLogos = list()
+                dirs, files = xbmcvfs.listdir(path)
+                for file in files:
+                    file = file.replace(".png","")
+                    file = file.replace(".PNG","")
+                    allLogos.append(file)
+
+                self.studioLogosPath = path
+                self.allStudioLogos = set(allLogos)
+
+    def getColourStudioLogos(self):
+                #fill list with all studio logos
+                path = "special://skin/extras/flags/colour/studios/"
+                if path != self.LastColourStudioImagesPath:
+                    self.LastColourStudioImagesPath = path
+                    allLogos = list()
+                    dirs, files = xbmcvfs.listdir(path)
+                    for file in files:
+                        file = file.replace(".png","")
+                        file = file.replace(".PNG","")
+                        allLogos.append(file)
+
+                    self.studioColourLogosPath = path
+                    self.allColourStudioLogos = set(allLogos)
                                 
     def checkExtraFanArt(self):
         
